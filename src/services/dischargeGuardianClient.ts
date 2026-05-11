@@ -22,19 +22,7 @@ export async function generateDischargePlan(
       throw new Error(`API error: ${response.status}`);
     }
 
-    const data = await response.json();
-
-    // Extract text from A2A response format
-    const textPart = data?.result?.artifacts?.[0]?.parts?.find(
-      (p: { kind: string }) => p.kind === "text"
-    );
-
-    if (textPart?.text) {
-      const parsed = JSON.parse(textPart.text);
-      return parsed as DischargeOutput;
-    }
-
-    throw new Error("No text response from agent");
+    return (await response.json()) as DischargeOutput;
   } catch (error) {
     console.error("API error, falling back to mock:", error);
     return getMockDischargeOutput();

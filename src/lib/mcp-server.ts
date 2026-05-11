@@ -1,47 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-
-const A2A_ENDPOINT =
-  process.env.PO_A2A_ENDPOINT ??
-  "https://app.promptopinion.ai/api/workspaces/019e121f-dfbd-77ac-82ea-0fba5d62101e/ai-agents/019e124e-b788-709d-8982-59b193701561/a2a-http-json";
-
-const API_KEY = process.env.PO_API_KEY ?? "";
-
-async function callA2A(prompt: string): Promise<string> {
-  const response = await fetch(A2A_ENDPOINT, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": API_KEY,
-    },
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      method: "message/send",
-      id: crypto.randomUUID(),
-      params: {
-        message: {
-          kind: "message",
-          messageId: crypto.randomUUID(),
-          role: "user",
-          parts: [{ kind: "text", text: prompt }],
-        },
-      },
-    }),
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`A2A API error ${response.status}: ${errorText}`);
-  }
-
-  const data = await response.json();
-  const textPart = data?.result?.artifacts?.[0]?.parts?.find(
-    (p: { kind: string }) => p.kind === "text"
-  );
-
-  if (textPart?.text) return textPart.text;
-  return JSON.stringify(data);
-}
+import { callGemini } from "./gemini.js";
 
 export function createMcpServer(): McpServer {
   const server = new McpServer({
@@ -56,8 +15,9 @@ export function createMcpServer(): McpServer {
       patient_info: z.string().describe("Patient clinical information: diagnosis, medications, labs, social situation, etc."),
     },
     async ({ patient_info }) => {
-      const prompt = `Generate discharge transition plan for the following patient:\n\n${patient_info}`;
-      const result = await callA2A(prompt);
+      const result = await callGemini(
+        `Generate discharge transition plan for the following patient:\n\n${patient_info}`
+      );
       return { content: [{ type: "text" as const, text: result }] };
     }
   );
@@ -69,8 +29,9 @@ export function createMcpServer(): McpServer {
       patient_info: z.string().describe("Patient clinical information to assess readmission risk"),
     },
     async ({ patient_info }) => {
-      const prompt = `Analyze readmission risk factors and provide preventive recommendations for:\n\n${patient_info}`;
-      const result = await callA2A(prompt);
+      const result = await callGemini(
+        `Analyze readmission risk factors and provide preventive recommendations for:\n\n${patient_info}`
+      );
       return { content: [{ type: "text" as const, text: result }] };
     }
   );
@@ -84,8 +45,9 @@ export function createMcpServer(): McpServer {
     },
     async ({ condition, language }) => {
       const langNote = language === "tr" ? " Respond in Turkish." : "";
-      const prompt = `Generate simple, patient-friendly education materials about: ${condition}.${langNote} Include warning signs, daily care tasks, and when to seek emergency help.`;
-      const result = await callA2A(prompt);
+      const result = await callGemini(
+        `Generate simple, patient-friendly education materials about: ${condition}.${langNote} Include warning signs, daily care tasks, and when to seek emergency help.`
+      );
       return { content: [{ type: "text" as const, text: result }] };
     }
   );

@@ -1,0 +1,80 @@
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY ?? "";
+const GEMINI_MODEL = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
+
+const SYSTEM_PROMPT = `You are a clinical decision support AI specialized in hospital discharge planning.
+Given patient information, generate a structured discharge transition plan in JSON format.
+
+You MUST respond with ONLY valid JSON matching this exact structure:
+
+{
+  "clinician_summary": {
+    "primary_diagnosis": "string",
+    "medication_changes": ["string"],
+    "important_labs_and_findings": ["string"],
+    "red_flag_risks": ["string"],
+    "follow_up_plan": ["string"],
+    "safety_notes": ["string"]
+  },
+  "patient_home_care_plan": {
+    "main_health_problem_simple": "string (explain in simple language a patient can understand)",
+    "medicine_plan": {
+      "morning": ["string"],
+      "afternoon": ["string"],
+      "evening": ["string"],
+      "before_sleep": ["string"]
+    },
+    "daily_tasks": ["string"],
+    "warning_signs_call_hospital_if": ["string"],
+    "appointments_and_tests": ["string"],
+    "important_reminders": ["string"]
+  },
+  "critical_safety_alerts": ["string"],
+  "missing_information": ["string"],
+  "clinician_review_required": true
+}
+
+Guidelines:
+- Be clinically accurate and evidence-based
+- Patient home care plan should use simple, clear language
+- Always set clinician_review_required to true (AI-generated content must be reviewed)
+- Identify any missing information that could affect care
+- Flag critical safety concerns prominently
+- Include specific medication names, dosages, and timing when provided`;
+
+export async function callGemini(prompt: string): Promise<string> {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      system_instruction: {
+        parts: [{ text: SYSTEM_PROMPT }],
+      },
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }],
+        },
+      ],
+      generationConfig: {
+        temperature: 0.3,
+        responseMimeType: "application/json",
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Gemini API error ${response.status}: ${errorText}`);
+  }
+
+  const data = await response.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text) {
+    throw new Error("No response from Gemini API");
+  }
+
+  return text;
+}
