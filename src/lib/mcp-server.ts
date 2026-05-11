@@ -51,18 +51,7 @@ export function createMcpServer(fhirContext?: FhirContext): McpServer {
   const server = new McpServer({
     name: "discharge-guardian",
     version: "1.0.0",
-    extensions: {
-      "ai.promptopinion/fhir-context": {
-        scopes: [
-          { name: "patient/Patient.read", required: true },
-          { name: "patient/Condition.read", required: true },
-          { name: "patient/MedicationRequest.read", required: true },
-          { name: "patient/Observation.read", required: false },
-          { name: "patient/AllergyIntolerance.read", required: false },
-        ],
-      },
-    },
-  });
+  } as ConstructorParameters<typeof McpServer>[0]);
 
   server.tool(
     "generate_discharge_plan",
