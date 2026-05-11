@@ -14,12 +14,19 @@ async function handleMcpRequest(req: NextRequest): Promise<Response> {
   if (!authenticateRequest(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const fhirContext = {
+    serverUrl: req.headers.get("x-fhir-server-url") ?? undefined,
+    accessToken: req.headers.get("x-fhir-access-token") ?? undefined,
+    patientId: req.headers.get("x-patient-id") ?? undefined,
+  };
+
   const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
     enableJsonResponse: true,
   });
 
-  const server = createMcpServer();
+  const server = createMcpServer(fhirContext);
   await server.connect(transport);
 
   try {
