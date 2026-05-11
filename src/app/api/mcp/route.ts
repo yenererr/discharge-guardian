@@ -1,8 +1,19 @@
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { createMcpServer } from "@/lib/mcp-server";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
+const MCP_API_KEY = process.env.MCP_API_KEY ?? "";
+
+function authenticateRequest(req: NextRequest): boolean {
+  if (!MCP_API_KEY) return true;
+  const key = req.headers.get("x-api-key");
+  return key === MCP_API_KEY;
+}
 
 async function handleMcpRequest(req: NextRequest): Promise<Response> {
+  if (!authenticateRequest(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
     enableJsonResponse: true,
