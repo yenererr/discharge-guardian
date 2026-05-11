@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { callGemini } from "./gemini.js";
+import { callGemini } from "./gemini";
 
 export function createMcpServer(): McpServer {
   const server = new McpServer({
