@@ -1,0 +1,1038 @@
+You are now taking over implementation for a healthcare AI hackathon project called **DischargeGuardian AI**.
+
+
+
+I need you to understand the full project, what has already been done, what still needs to be built, and then implement a polished demo application.
+
+
+
+====================================================
+
+PROJECT OVERVIEW
+
+================
+
+
+
+Project Name:
+
+DischargeGuardian AI
+
+
+
+Hackathon Context:
+
+Agents Assemble healthcare AI hackathon.
+
+
+
+Core Idea:
+
+DischargeGuardian AI helps hospitals reduce preventable readmissions after discharge.
+
+
+
+The system takes complex discharge summaries and patient context, then generates:
+
+
+
+1. Clinician-facing technical discharge summary
+
+2. Patient-friendly home care plan
+
+3. Critical safety alerts
+
+4. Medication risk explanations
+
+5. Follow-up reminders
+
+6. Low health literacy adapted instructions
+
+
+
+This is not a generic chatbot.
+
+This is a structured healthcare discharge transition workflow product.
+
+
+
+Main patient scenario:
+
+A 72-year-old female heart failure patient is discharged after volume overload admission.
+
+She has:
+
+
+
+* HFrEF, LVEF 35%
+
+* CKD stage 3
+
+* Type 2 diabetes
+
+* Hypertension
+
+* Hyperlipidemia
+
+* Furosemide dose increased from 40mg BID to 80mg BID
+
+* Borderline low potassium: K+ 3.8
+
+* BNP 450
+
+* Creatinine 1.2
+
+* Fall risk
+
+* Medication confusion risk
+
+* Low health literacy
+
+* Lives alone
+
+* Needs electrolyte panel in 72 hours
+
+* Cardiology follow-up in 7 days
+
+* Daily weight monitoring
+
+
+
+The product should show how AI converts a complex discharge note into safe, understandable, actionable discharge guidance.
+
+
+
+Core slogan:
+
+“Doctors write discharge summaries for clinicians. DischargeGuardian rewrites them for patients.”
+
+
+
+====================================================
+
+WHAT HAS ALREADY BEEN DONE
+
+==========================
+
+
+
+1. Prompt Opinion account and agent setup completed.
+
+2. DischargeGuardian AI agent created.
+
+3. System prompt configured.
+
+4. Consult prompt configured.
+
+5. JSON response format configured.
+
+6. A2A availability enabled.
+
+7. FHIR context support enabled.
+
+8. Agent skill added:
+
+
+
+   * discharge_transition_planning
+
+   * health_literacy_adaptation
+
+9. Healthcare safety guardrail was tested.
+
+10. Synthetic patient was imported into Prompt Opinion.
+
+11. AI agent successfully generated structured JSON discharge output.
+
+12. The output includes:
+
+
+
+* clinician_summary
+
+* patient_home_care_plan
+
+* critical_safety_alerts
+
+* missing_information
+
+* clinician_review_required
+
+
+
+Current AI output works, but raw JSON is hard to read.
+
+So now we need a polished frontend that turns the JSON into a real healthcare dashboard.
+
+
+
+====================================================
+
+CURRENT PROBLEM
+
+===============
+
+
+
+The AI output is good but looks like code because it is JSON.
+
+
+
+We need to build a UI layer that renders the JSON as:
+
+
+
+* readable cards
+
+* risk badges
+
+* medication timeline
+
+* follow-up reminders
+
+* patient-friendly instructions
+
+* clinician summary panels
+
+* safety alerts
+
+
+
+Do not display raw JSON to the user.
+
+
+
+====================================================
+
+IMPLEMENTATION GOAL
+
+===================
+
+
+
+Build a production-style healthcare SaaS frontend.
+
+
+
+Tech stack:
+
+
+
+* Next.js
+
+* React
+
+* TypeScript
+
+* Tailwind CSS
+
+* Component-based architecture
+
+
+
+Initial version:
+
+
+
+* Use hardcoded/mock JSON
+
+* No real backend required yet
+
+* No authentication required yet
+
+* No database required yet
+
+* No live Prompt Opinion API required yet
+
+
+
+Later version:
+
+
+
+* Connect frontend to Prompt Opinion API or A2A endpoint once exact endpoint details are available.
+
+
+
+For now, prioritize:
+
+
+
+* polished UI
+
+* clean workflow
+
+* demo-readiness
+
+* realistic healthcare product feel
+
+
+
+====================================================
+
+WHAT THE APP SHOULD LOOK LIKE
+
+=============================
+
+
+
+The app should look like a real hospital AI dashboard.
+
+
+
+Design style:
+
+
+
+* clean hospital-grade UI
+
+* modern healthcare SaaS
+
+* white background
+
+* soft blue accents
+
+* calm, trustworthy design
+
+* rounded cards
+
+* polished spacing
+
+* accessible typography
+
+* enterprise-grade layout
+
+* not a chatbot UI
+
+
+
+Main screen:
+
+A split-screen AI discharge analysis workspace.
+
+
+
+Top Navbar:
+
+
+
+* DischargeGuardian AI logo
+
+* selected patient name
+
+* discharge date
+
+* AI status indicator
+
+* Clinician Review Required badge
+
+* Export PDF button
+
+* Print button
+
+* Share with caregiver button
+
+
+
+Left Panel:
+
+Clinician Summary
+
+
+
+Cards:
+
+
+
+* Primary Diagnosis
+
+* Medication Changes
+
+* Important Labs & Findings
+
+* Red Flag Risks
+
+* Follow-up Plan
+
+* Safety Notes
+
+
+
+Right Panel:
+
+Patient Home Care Plan
+
+
+
+Sections:
+
+
+
+* Your Main Health Problem
+
+* Morning Medications
+
+* Afternoon Medications
+
+* Evening Medications
+
+* Daily Tasks
+
+* Warning Signs: Call Hospital If
+
+* Appointments & Tests
+
+* Important Reminders
+
+
+
+Bottom / Prominent Section:
+
+Critical Safety Alerts
+
+
+
+Alert cards:
+
+
+
+* hypokalemia risk
+
+* fall/syncope risk
+
+* fluid overload/dehydration guidance
+
+
+
+Extra Components:
+
+
+
+* Medication Timeline
+
+* Risk Severity Badges
+
+* Follow-up Reminder Cards
+
+* Caregiver Mode Toggle
+
+* AI Explainability Panel
+
+* Missing Information Panel
+
+* Daily Weight Monitoring Card
+
+
+
+====================================================
+
+SAMPLE JSON TO USE AS MOCK DATA
+
+===============================
+
+
+
+Create a file:
+
+
+
+src/data/mockDischargeOutput.ts
+
+
+
+Use this data:
+
+
+
+{
+
+"clinician_summary": {
+
+"safety_notes": [
+
+"Patient is at significant risk for hypokalemia due to dose increase of loop diuretic.",
+
+"High risk of falls due to potential orthostatic hypotension from antihypertensive regimen and diuresis.",
+
+"Requires close monitoring of renal function and electrolytes given underlying CKD stage 3.",
+
+"Transition care requires high vigilance for signs of volume overload or rapid dehydration."
+
+],
+
+"follow_up_plan": [
+
+"Electrolyte panel in 72 hours to assess for hypokalemia.",
+
+"Cardiology follow-up in 7 days.",
+
+"Patient instructed on daily morning weight tracking."
+
+],
+
+"red_flag_risks": [
+
+"Worsening dyspnea or orthopnea.",
+
+"Significant weight gain: more than 2 kg in 2-3 days.",
+
+"Symptomatic hypotension or syncope.",
+
+"Severe fatigue or signs of electrolyte disturbance such as muscle weakness or palpitations."
+
+],
+
+"primary_diagnosis": "HFrEF (LVEF 35%) with acute on chronic volume overload.",
+
+"medication_changes": [
+
+"Furosemide: Increased from 40mg BID to 80mg BID.",
+
+"Continue lisinopril, metoprolol, atorvastatin, and metformin as previously prescribed."
+
+],
+
+"important_labs_and_findings": [
+
+"Potassium 3.8 mmol/L (borderline low).",
+
+"Creatinine 1.2 mg/dL.",
+
+"BNP 450 pg/mL."
+
+]
+
+},
+
+"missing_information": [
+
+"Baseline creatinine and potassium levels for comparison.",
+
+"Specific individualized fluid restriction instructions."
+
+],
+
+"critical_safety_alerts": [
+
+"High risk of diuretic-induced hypokalemia; serum potassium monitoring is critical in 72 hours.",
+
+"Increased risk of fall/syncope due to combination of HFrEF medications and increased diuretic dosing.",
+
+"Patient needs clear guidance on differentiating fluid overload from dehydration symptoms."
+
+],
+
+"patient_home_care_plan": {
+
+"daily_tasks": [
+
+"Weigh yourself every morning before breakfast, after using the bathroom, and wearing similar clothing.",
+
+"Check your legs and feet daily for new or worsening swelling.",
+
+"Take your heart and fluid medications exactly as prescribed.",
+
+"Rise slowly from sitting or lying down to avoid dizziness."
+
+],
+
+"medicine_plan": {
+
+"morning": [
+
+"Furosemide (water pill): 80mg",
+
+"Take heart and diabetes medications as instructed."
+
+],
+
+"afternoon": [],
+
+"evening": [
+
+"Furosemide (water pill): 80mg",
+
+"Take maintenance medications as instructed."
+
+],
+
+"before_sleep": []
+
+},
+
+"important_reminders": [
+
+"Keep a log of your daily weights.",
+
+"Drink only the amount of fluids your doctor recommended.",
+
+"Watch for dizziness when you stand up quickly.",
+
+"Do not skip blood tests for your electrolyte levels."
+
+],
+
+"appointments_and_tests": [
+
+"Blood test for electrolytes in 3 days.",
+
+"Cardiology check-up in 7 days."
+
+],
+
+"main_health_problem_simple": "Heart failure means your heart is having a hard time pumping blood effectively. This can cause fluid to build up in your body. Your water pill helps remove extra fluid.",
+
+"warning_signs_call_hospital_if": [
+
+"You gain 2 kg or more in 2 to 3 days.",
+
+"You feel very dizzy or lightheaded when standing.",
+
+"You have trouble breathing, even while resting.",
+
+"You notice sudden weakness or heart palpitations.",
+
+"Your leg swelling gets worse."
+
+]
+
+},
+
+"clinician_review_required": true
+
+}
+
+
+
+Also create mock patient metadata:
+
+
+
+* Patient name: Ayşe Yılmaz
+
+* Age: 72
+
+* DOB: 1952-04-16
+
+* Diagnosis: Heart failure with reduced ejection fraction
+
+* Discharge date: 2026-05-10
+
+* Health literacy: Low
+
+* Living situation: Lives alone
+
+* Caregiver: Daughter visits 1-2 times per week
+
+* Readmission risk: High
+
+
+
+====================================================
+
+REQUIRED FILE STRUCTURE
+
+=======================
+
+
+
+Create a clean project structure:
+
+
+
+src/
+
+app/
+
+page.tsx
+
+layout.tsx
+
+globals.css
+
+components/
+
+Navbar.tsx
+
+PatientHeader.tsx
+
+ClinicianSummaryPanel.tsx
+
+PatientHomeCarePanel.tsx
+
+CriticalAlerts.tsx
+
+MedicationTimeline.tsx
+
+FollowUpCards.tsx
+
+RiskBadge.tsx
+
+SectionCard.tsx
+
+ExplainabilityPanel.tsx
+
+MissingInformationPanel.tsx
+
+CaregiverModeToggle.tsx
+
+data/
+
+mockDischargeOutput.ts
+
+services/
+
+dischargeGuardianClient.ts
+
+types/
+
+discharge.ts
+
+utils/
+
+severity.ts
+
+
+
+====================================================
+
+COMPONENT REQUIREMENTS
+
+======================
+
+
+
+1. Navbar
+
+
+
+* logo
+
+* patient selector
+
+* AI status indicator
+
+* clinician review required badge
+
+* export/print/share buttons
+
+
+
+2. PatientHeader
+
+
+
+* patient demographics
+
+* diagnosis
+
+* discharge date
+
+* risk level badge
+
+* health literacy badge
+
+* living situation
+
+
+
+3. ClinicianSummaryPanel
+
+   Render:
+
+
+
+* primary diagnosis
+
+* medication changes
+
+* labs
+
+* red flags
+
+* follow-up
+
+* safety notes
+
+
+
+4. PatientHomeCarePanel
+
+   Render:
+
+
+
+* main health problem in simple language
+
+* medicine plan
+
+* daily tasks
+
+* warning signs
+
+* appointments
+
+* reminders
+
+
+
+5. CriticalAlerts
+
+   Render safety alerts as large red/orange cards.
+
+
+
+6. MedicationTimeline
+
+   Render morning, afternoon, evening, before sleep medication groups.
+
+
+
+7. FollowUpCards
+
+   Show:
+
+
+
+* electrolyte panel in 72 hours
+
+* cardiology follow-up in 7 days
+
+* daily weight tracking
+
+
+
+8. RiskBadge
+
+   Reusable badge with severity:
+
+
+
+* high
+
+* medium
+
+* low
+
+
+
+9. ExplainabilityPanel
+
+   Show why AI flagged risks:
+
+
+
+* furosemide dose increase
+
+* potassium 3.8
+
+* living alone
+
+* CKD stage 3
+
+* fall risk
+
+
+
+10. MissingInformationPanel
+
+    Show missing data in a non-blocking way.
+
+
+
+11. CaregiverModeToggle
+
+    Toggle visual state only for now.
+
+    When enabled, emphasize patient-friendly plan.
+
+
+
+====================================================
+
+API PREPARATION
+
+===============
+
+
+
+Create:
+
+
+
+src/services/dischargeGuardianClient.ts
+
+
+
+It should export:
+
+
+
+* getMockDischargeOutput()
+
+* generateDischargePlan(input)
+
+
+
+For now:
+
+
+
+* both return mock data
+
+* add TODO comment for Prompt Opinion API/A2A integration
+
+
+
+Example:
+
+
+
+export async function generateDischargePlan(input) {
+
+// TODO: Replace mock response with Prompt Opinion API/A2A call.
+
+return mockDischargeOutput;
+
+}
+
+
+
+Do not implement real API yet unless credentials/endpoints are provided.
+
+
+
+====================================================
+
+IMPORTANT FRONTEND RULES
+
+========================
+
+
+
+* Do not show raw JSON.
+
+* Do not overbuild backend.
+
+* Do not add authentication.
+
+* Do not add database.
+
+* Do not create a chatbot interface.
+
+* Make the dashboard demo-ready.
+
+* Use realistic synthetic data.
+
+* Keep code readable.
+
+* Use TypeScript types.
+
+* Make UI responsive.
+
+* Make empty states clean.
+
+* Make print/export buttons visually present even if non-functional.
+
+
+
+====================================================
+
+NEXT STEPS AFTER YOU BUILD IT
+
+=============================
+
+
+
+After implementation, tell me:
+
+
+
+1. How to run the project locally
+
+2. Which files were created
+
+3. Where mock JSON is stored
+
+4. Where Prompt Opinion API integration should be added later
+
+5. What environment variables might be needed later
+
+6. What screenshots/pages I should use in the demo video
+
+
+
+====================================================
+
+WHAT I WILL DO AFTER YOU FINISH
+
+===============================
+
+
+
+After you build the frontend, I will:
+
+
+
+1. Run the app locally
+
+2. Verify the UI renders the mock AI output
+
+3. Record the demo video
+
+4. Show:
+
+
+
+   * patient profile
+
+   * AI discharge analysis
+
+   * clinician summary
+
+   * patient home care plan
+
+   * safety alerts
+
+   * follow-up reminders
+
+5. Mention that the current demo uses structured AI output from Prompt Opinion
+
+6. Later connect the app to Prompt Opinion API/A2A endpoint if endpoint details are available
+
+7. Submit the project to Devpost with screenshots, demo video, and architecture explanation
+
+
+
+====================================================
+
+FINAL GOAL
+
+==========
+
+
+
+Build a polished frontend that makes DischargeGuardian AI look like a real deployable healthcare AI product.
+
+
+
+The final product should communicate:
+
+
+
+* patient safety
+
+* readmission prevention
+
+* health literacy adaptation
+
+* clinical explainability
+
+* AI-assisted discharge workflow
+
+* healthcare interoperability readiness
+
+
+
+Prioritize a working, beautiful, demo-ready application over unnecessary complexity.
+
