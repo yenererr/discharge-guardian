@@ -50,12 +50,14 @@ You MUST respond with ONLY valid JSON matching this exact structure:
 }
 
 Guidelines:
+- IMPORTANT: ALL string values in the JSON MUST be written in Turkish. This includes all medical descriptions, alerts, instructions, missing information, safety notes, daily tasks, reminders, and everything else. Only keep JSON keys in English.
 - Be clinically accurate and evidence-based
-- Patient home care plan should use simple, clear language
+- Patient home care plan should use simple, clear language in Turkish
 - Always set clinician_review_required to true (AI-generated content must be reviewed)
-- Identify any missing information that could affect care
-- Flag critical safety concerns prominently
-- Include specific medication names, dosages, and timing when provided`;
+- Identify any missing information that could affect care (write in Turkish)
+- Flag critical safety concerns prominently (write in Turkish)
+- Include specific medication names, dosages, and timing when provided
+- Use Turkish medical terminology where appropriate`;
 
 export async function callGemini(prompt: string): Promise<string> {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
