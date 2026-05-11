@@ -7,6 +7,22 @@ Given patient information, generate a structured discharge transition plan in JS
 You MUST respond with ONLY valid JSON matching this exact structure:
 
 {
+  "patient_info": {
+    "name": "string",
+    "age": number,
+    "gender": "string (Male/Female)",
+    "dob": "string (YYYY-MM-DD, estimate if not provided)",
+    "mrn": "string (generate a realistic MRN like MRN-YYYY-NNNNNN)",
+    "diagnosis": "string",
+    "admission_date": "string (YYYY-MM-DD, estimate as ~5-7 days before discharge if not provided)",
+    "discharge_date": "string (YYYY-MM-DD, use today if not provided)",
+    "attending_physician": "string (use provided name or generate a realistic one)",
+    "department": "string",
+    "health_literacy": "low | medium | high",
+    "living_situation": "string",
+    "caregiver": "string",
+    "readmission_risk": "low | medium | high"
+  },
   "clinician_summary": {
     "primary_diagnosis": "string",
     "medication_changes": ["string"],

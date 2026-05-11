@@ -24,6 +24,7 @@ export interface PatientHomeCarePlan {
 }
 
 export interface DischargeOutput {
+  patient_info?: PatientInfo;
   clinician_summary: ClinicianSummary;
   patient_home_care_plan: PatientHomeCarePlan;
   critical_safety_alerts: string[];

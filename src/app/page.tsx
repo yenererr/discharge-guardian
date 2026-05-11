@@ -21,7 +21,7 @@ function DashboardContent() {
   const [data, setData] = useState<DischargeOutput>(mockDischargeOutput);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const patient = mockPatientInfo;
+  const patient = data.patient_info ?? mockPatientInfo;
 
   const handleGenerate = async (prompt: string) => {
     setLoading(true);
